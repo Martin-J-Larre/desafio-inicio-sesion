@@ -34,22 +34,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./src/public"));
 
-//! aQUÍ THE DRAMA
-// app.use(
-// 	session({
-// 		store: MongoStore.create({
-// 			mongoUrl:
-// 			//! este es del desafío pasado -----> 'mongodb+srv://root:toor@cluster0.zntdz.mongodb.net/test',
-// 			//!  -----> ver borrador.js
-// 			mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-// 		}),
-// 		secret: "This is my secret word.",
-// 		resave: false,
-// 		saveUninitialized: false,
-// 		rolling: true,
-// 		cookie: { maxAge: 60000 * 10 },
-// 	})
-// );
+app.use(
+	session({
+		store: MongoStore.create({
+			mongoUrl:
+			'mongodb://localhost:27017/admin',
+			mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+		}),
+		secret: "This is my secret word.",
+		resave: false,
+		saveUninitialized: false,
+		rolling: true,
+		cookie: { maxAge: 60000 * 10 },
+	})
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -132,10 +130,10 @@ connectDb((err) => {
 	if (err) return console.log("Error connecting to database: ", err);
 	console.log("DATABASE CONNECTED");
 
-	const PORT = process.env.PORT || 8080;
+	const PORT = process.env.PORT || 8081;
 
 	const server = app.listen(PORT, () => {
-		console.log(`Server on port ${server.address().port}`);
+		console.log(`Connected to URL: http://localhost:${server.address().port}`);
 	});
 	server.on("error", (err) => console.log(`Error in server: ${err}`));
 
@@ -149,10 +147,10 @@ connectDb((err) => {
 		const fakerProducts = getFakerProducts();
 
 		//Fetch products
-		const products = await sqlite3Model.getElementsAll();
+		const products = await sqliteServices.getElementsAll();
 
 		//Fetch messages
-		const messages = await mongoModel.getMessagesAll();
+		const messages = await mongoServices.getMessagesAll();
 
 		socket.emit("loadFakerProducts", fakerProducts);
 		socket.emit("loadProducts", products);

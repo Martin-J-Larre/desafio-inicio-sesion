@@ -4,7 +4,7 @@ var dbConnected = false;
 
 function connectDb(cb) {
 	mongoose.connect(
-		//! ver borrador=2 
+		'mongodb://localhost:27017/admin', 
 		{ useNewUrlParser: true, useUnifiedTopology: true },
 		(err) => {
 			if (!err) {
